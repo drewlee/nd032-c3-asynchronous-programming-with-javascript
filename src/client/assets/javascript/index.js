@@ -3,7 +3,6 @@
 // The store will hold all information needed globally
 const store = {
 	track_id: undefined,
-	track_name: undefined,
 	player_id: undefined,
 	race_id: undefined,
 }
@@ -36,15 +35,16 @@ async function onPageLoad() {
 function setupClickHandlers() {
 	document.addEventListener('click', function(event) {
 		const { target } = event
-		// TODO: fix weird click issues
+
 		// Race track form field
 		if (target.matches('.card.track')) {
 			handleSelectTrack(target);
 		}
 
 		// Podracer form field
-		if (target.matches('.card.podracer')) {
-			handleSelectPodRacer(target);
+		const podracerCard = target.closest('.card.podracer');
+		if (podracerCard) {
+			handleSelectPodRacer(podracerCard);
 		}
 
 		// Submit create race form
@@ -75,10 +75,9 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-	// Get player_id, track_id, and track_name from the store
-	const playerId = store.player_id;
-	const trackId = store.track_id;
-	const trackName = store.track_name;
+	// Get player_id and track_id from the store
+	const { player_id: playerId, track_id: trackId } = store;
+	const trackName = document.querySelector(`[data-track-id="${trackId}"]`).innerText;
 
 	// render starting UI
 	renderAt('#race', renderRaceStartView(trackName));
