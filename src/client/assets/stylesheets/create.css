@@ -2,11 +2,6 @@
 
 /* -------------------  MOBILE  --------------------- */
 
-header {
-  background-image: url('https://via.placeholder.com/1150');
-}
-
-
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
 
