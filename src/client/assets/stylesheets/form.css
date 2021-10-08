@@ -3,7 +3,7 @@ form ul {
     padding: 20px;
 }
 
-form li {
+form button {
     border-radius: 6px;
     -webkit-box-shadow: 5px 7px 5px 0px rgba(237,230,237,1);
     -moz-box-shadow: 5px 7px 5px 0px rgba(237,230,237,1);
@@ -13,19 +13,33 @@ form li {
     border: 1px solid #fbf5f5;
     cursor: pointer;
     transition: all .6s;
+    background-color: #fff;
+    font-size: 25px;
 }
 
-form li:hover {
+form .track::after {
+    content: "";
+    display: block;
+    border-bottom: 1px solid #545454;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+form .podracer h3 {
+    border-bottom: 1px solid #545454;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+form .podracer p {
+    text-align: left;
+}
+
+form button:hover {
     box-shadow: none;
     border: 1px solid rgb(109, 233, 23);
 }
 
-form li.selected {
+form button.selected {
     border: 1px solid rgb(109, 233, 23);
-}
-
-form li h3 {
-    border-bottom: 1px solid #545454;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
 }

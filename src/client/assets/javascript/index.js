@@ -3,6 +3,7 @@
 // The store will hold all information needed globally
 const store = {
 	track_id: undefined,
+	track_name: undefined,
 	player_id: undefined,
 	race_id: undefined,
 }
@@ -74,13 +75,13 @@ async function delay(ms) {
 
 // This async function controls the flow of the race, add the logic and error handling
 async function handleCreateRace() {
-	// render starting UI
-	// TODO: output track name
-	renderAt('#race', renderRaceStartView({ name: 'foo' }));
-
-	// Get player_id and track_id from the store
+	// Get player_id, track_id, and track_name from the store
 	const playerId = store.player_id;
 	const trackId = store.track_id;
+	const trackName = store.track_name;
+
+	// render starting UI
+	renderAt('#race', renderRaceStartView(trackName));
 
 	// invoke the API call to create the race, then save the result
 	const race = await createRace(playerId, trackId);
@@ -140,17 +141,17 @@ function runRace(raceID) {
 async function runCountdown() {
 	try {
 		// wait for the DOM to load
-		await delay(1000)
-		let timer = 3
+		await delay(1000);
+		let timer = 3;
 
 		return new Promise((resolve) => {
 			// use Javascript's built in setInterval method to count down once per second
-			const intval = setInterval(() => {
+			const countInterval = setInterval(() => {
 				// run this DOM manipulation to decrement the countdown for the user
 				document.getElementById('big-numbers').innerHTML = --timer;
 				if (timer < 1) {
 					// if the countdown is done, clear the interval, resolve the promise, and return
-					clearInterval(intval);
+					clearInterval(countInterval);
 					resolve();
 				}
 			}, 1000);
@@ -161,7 +162,8 @@ async function runCountdown() {
 }
 
 function handleSelectPodRacer(target) {
-	console.log('selected a pod', target.id);
+	const id = target.dataset.racerId;
+	console.log('selected a pod', id);
 
 	// remove class selected from all racer options
 	const selected = document.querySelector('#racers .selected');
@@ -173,11 +175,12 @@ function handleSelectPodRacer(target) {
 	target.classList.add('selected');
 
 	// save the selected racer to the store
-	store.player_id = Number(target.id);
+	store.player_id = Number(id);
 }
 
 function handleSelectTrack(target) {
-	console.log('selected a track', target.id);
+	const id = target.dataset.trackId;
+	console.log('selected a track', id);
 
 	// remove class selected from all track options
 	const selected = document.querySelector('#tracks .selected')
@@ -188,8 +191,9 @@ function handleSelectTrack(target) {
 	// add class selected to current target
 	target.classList.add('selected');
 
-	// save the selected track id to the store
-	store.track_id = Number(target.id);
+	// save the selected track id and name to the store
+	store.track_id = Number(id);
+	store.track_name = target.innerText;
 }
 
 function handleAccelerate() {
@@ -222,11 +226,13 @@ function renderRacerCard(racer) {
 	const { id, driver_name, top_speed, acceleration, handling } = racer;
 
 	return `
-		<li class="card podracer" id="${id}">
-			<h3>${driver_name}</h3>
-			<p>${top_speed}</p>
-			<p>${acceleration}</p>
-			<p>${handling}</p>
+		<li>
+			<button type="button" class="card podracer" data-racer-id="${id}">
+				<h3>${driver_name}</h3>
+				<p>${top_speed}</p>
+				<p>${acceleration}</p>
+				<p>${handling}</p>
+			</button>
 		</li>
 	`;
 }
@@ -251,8 +257,8 @@ function renderTrackCard(track) {
 	const { id, name } = track;
 
 	return `
-		<li id="${id}" class="card track">
-			<h3>${name}</h3>
+		<li>
+			<button type="button" data-track-id="${id}" class="card track">${name}</button>
 		</li>
 	`;
 }
@@ -264,10 +270,10 @@ function renderCountdown(count) {
 	`;
 }
 
-function renderRaceStartView(track, racers) {
+function renderRaceStartView(track) {
 	return `
 		<header>
-			<h1>Race: ${track.name}</h1>
+			<h1>Race: ${track}</h1>
 		</header>
 		<main id="two-columns">
 			<section id="leaderBoard">
