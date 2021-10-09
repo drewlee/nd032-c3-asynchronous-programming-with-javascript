@@ -160,6 +160,12 @@ async function runCountdown() {
 	}
 }
 
+function handleEnableSubmit() {
+	if (store.player_id !== undefined && store.track_id !== undefined) {
+		document.getElementById('submit-create-race').disabled = false;
+	}
+}
+
 function handleSelectPodRacer(target) {
 	const id = target.dataset.racerId;
 	console.log('selected a pod', id);
@@ -175,6 +181,8 @@ function handleSelectPodRacer(target) {
 
 	// save the selected racer to the store
 	store.player_id = Number(id);
+
+	handleEnableSubmit();
 }
 
 function handleSelectTrack(target) {
@@ -192,6 +200,8 @@ function handleSelectTrack(target) {
 
 	// save the selected track id to the store
 	store.track_id = Number(id);
+
+	handleEnableSubmit();
 }
 
 function handleAccelerate() {
